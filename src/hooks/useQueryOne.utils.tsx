@@ -32,9 +32,10 @@ export function createQueryOne(
 
   const variables = state.variables;
 
+  let warnings = [];
   for (const key of config.primaryKey) {
     if (!variables[key]) {
-      throw new Error(`no value for primary key ${key}`);
+      warnings.push(`useQueryOne: no value for primary key ${key}`);
     }
   }
 

@@ -48,12 +48,22 @@ export function useQueryOne<TData extends JsonObject, TVariables extends JsonObj
   }
 
   const [queryCfg, setQueryCfg] = useState(computeConfig);
+
+  const isMissingPrimaryKey = queryCfg.warnings?.filter((warning) =>
+    warning.startsWith(`useQueryOne: no value for primary key`),
+  );
+  const pauseForMissingPrimaryKey = isMissingPrimaryKey && !urqlContext?.pause;
+  if (pauseForMissingPrimaryKey) {
+    console.warn(
+      `Attempted to execute useQueryOne without a value for the primary key.  Pass urqlContext.pause: true into useQueryOne until your primaryKeyValue is ready.  Query has been automatically paused.`,
+    );
+  }
+  
   const [resp, reExecuteQuery] = useQuery<TData>({
     query: queryCfg?.document,
     variables: queryCfg.variables,
-    context: urqlContext
+    context: pauseForMissingPrimaryKey ? {...urqlContext, pause: true} : urqlContext,
   });
-  console.log('🚀 ~ file: useQueryOne.tsx ~ line 39 ~ resp', resp);
 
   useEffect(() => {
     updateItemKey();

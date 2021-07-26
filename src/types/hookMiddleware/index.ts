@@ -19,4 +19,5 @@ export interface QueryPostMiddlewareState {
   document: DocumentNode;
   variables: JsonObject;
   operationName: string;
+  warnings?: string[]
 }

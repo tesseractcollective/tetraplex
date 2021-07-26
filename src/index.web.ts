@@ -2,7 +2,7 @@ export { MutatorButton } from './components/shared/MutatorButton';
 export { MutatorTextInput } from './components/shared/MutatorTextInput';
 export { PaginatedTable } from './components/web/PaginatedTable';
 export type { IPaginatedTableProps } from './components/web/PaginatedTable';
-export { Input } from './components/shared/Input';
+export {default as Input} from './components/shared/Input';
 export type { InputType } from './components/shared/Input';
 
 export { ReactGraphqlProvider } from './hooks/ReactGraphqlProvider';
