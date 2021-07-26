@@ -101,6 +101,7 @@ export function useReactGraphql(config: HasuraDataConfig) {
       middleware?: QueryMiddleware[];
       resultHelperOptions?: IUseOperationStateHelperOptions;
       urqlContext?: Partial<OperationContext>;
+      pause?: boolean;
     }) =>
       useQueryOne({
         sharedConfig: config,
@@ -108,6 +109,7 @@ export function useReactGraphql(config: HasuraDataConfig) {
         variables: props.variables,
         urqlContext: props?.urqlContext,
         resultHelperOptions: props?.resultHelperOptions,
+        pause: props?.pause
       }),
   };
 }

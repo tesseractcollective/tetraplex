@@ -21,10 +21,7 @@ function createVariableDefinitionsString(variables: JsonObject, config: HasuraDa
     .join(', ');
 }
 
-export function createQueryOne(
-  state: QueryPreMiddlewareState,
-  config: HasuraDataConfig,
-): QueryPostMiddlewareState {
+export function createQueryOne(state: QueryPreMiddlewareState, config: HasuraDataConfig): QueryPostMiddlewareState {
   const name = config.typename;
   const operationName = config.overrides?.operationNames?.query_by_pk ?? `${name}_by_pk`;
 
@@ -33,34 +30,40 @@ export function createQueryOne(
   const variables = state.variables;
 
   let warnings = [];
+  let missingPrimaryKey;
   for (const key of config.primaryKey) {
     if (!variables[key]) {
-      warnings.push(`useQueryOne: no value for primary key ${key}`);
+      missingPrimaryKey = key;
     }
   }
 
-  const operationStrBase = config.primaryKey
-    .map((key) => {
-      return variables[key] ? `${key}: $${key}` : null;
-    })
-    .filter((x) => !!x)
-    .join(', ');
+  if (missingPrimaryKey) {
+    warnings.push(`useQueryOne: no value for primary key ${missingPrimaryKey}`);
+    return { document: fragment, variables, operationName, warnings };
+  } else {
+    const operationStrBase = config.primaryKey
+      .map((key) => {
+        return variables[key] ? `${key}: $${key}` : null;
+      })
+      .filter((x) => !!x)
+      .join(', ');
 
-  const operationStr = operationStrBase ? `(${operationStrBase})` : '';
-  const variableDefinitionsString = createVariableDefinitionsString(variables, config);
+    const operationStr = operationStrBase ? `(${operationStrBase})` : '';
+    const variableDefinitionsString = createVariableDefinitionsString(variables, config);
 
-  let frag = buildFragment(fragment, operationStr, variables);
+    let frag = buildFragment(fragment, operationStr, variables);
 
-  const queryString = `query ${name}Query(${variableDefinitionsString}) {
+    const queryString = `query ${name}Query(${variableDefinitionsString}) {
     ${operationName}${operationStr} {
       ...${fragmentName}
     }
   }
   ${frag}`;
 
-  console.log('🚀 ~ file: useQueryOne.utils.tsx ~ line 1 ~ queryString', queryString, variables);
+    console.log('🚀 ~ file: useQueryOne.utils.tsx ~ line 1 ~ queryString', queryString, variables);
 
-  const document = buildDocument(queryString, operationStr, variables, 'createQueryOne', 'query');
+    const document = buildDocument(queryString, operationStr, variables, 'createQueryOne', 'query');
 
-  return { document, variables, operationName };
+    return { document, variables, operationName };
+  }
 }

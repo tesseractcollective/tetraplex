@@ -1,9 +1,9 @@
 {
   "name": "@tesseractcollective/react-graphql",
-  "version": "0.8.10",
+  "version": "0.8.11",
   "private": false,
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./dist/src/index.js",
+  "types": "./dist/src/index.d.ts",
   "files": [
     "dist",
     "LICENSE",

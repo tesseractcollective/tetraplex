@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { HasuraDataConfig } from '../types/hasuraConfig';
 import { QueryMiddleware } from '../types/hookMiddleware';
 import { OperationContext, useQuery, UseQueryState } from 'urql';
@@ -16,6 +16,7 @@ interface IUseQueryOne {
   variables: JsonObject;
   resultHelperOptions?: IUseOperationStateHelperOptions;
   urqlContext?: Partial<OperationContext>;
+  pause?: boolean;
 }
 
 export interface QueryState {
@@ -25,7 +26,7 @@ export interface QueryState {
   error?: Error;
   queryState?: UseQueryState;
   stale: boolean;
-  refresh: ()=> void;
+  refresh: () => void;
   setVariables: React.Dispatch<React.SetStateAction<JsonObject>>;
   variables: JsonObject;
 }
@@ -33,7 +34,7 @@ export interface QueryState {
 const defaultUrqlContext: Partial<OperationContext> = { requestPolicy: 'cache-and-network' };
 
 export function useQueryOne<TData extends JsonObject, TVariables extends JsonObject>(props: IUseQueryOne): QueryState {
-  const { sharedConfig, middleware, variables, urqlContext = defaultUrqlContext } = props;
+  const { sharedConfig, middleware, variables, urqlContext = defaultUrqlContext, pause = false } = props;
 
   const [item, setItem] = useState<TData | null>();
   const [key, setKey] = useState<string>();
@@ -49,20 +50,35 @@ export function useQueryOne<TData extends JsonObject, TVariables extends JsonObj
 
   const [queryCfg, setQueryCfg] = useState(computeConfig);
 
-  const isMissingPrimaryKey = queryCfg.warnings?.filter((warning) =>
+  const isMissingPrimaryKey = !!queryCfg.warnings?.filter((warning) =>
     warning.startsWith(`useQueryOne: no value for primary key`),
-  );
-  const pauseForMissingPrimaryKey = isMissingPrimaryKey && !urqlContext?.pause;
+  )?.length;
+  const pauseForMissingPrimaryKey = isMissingPrimaryKey && !pause;
   if (pauseForMissingPrimaryKey) {
     console.warn(
-      `Attempted to execute useQueryOne without a value for the primary key.  Pass urqlContext.pause: true into useQueryOne until your primaryKeyValue is ready.  Query has been automatically paused.`,
+      `Attempted to execute useQueryOne without a value for the primary key.  Pass urqlContext.pause: true into useQueryOne until your primaryKeyValue is ready.  Query has been automatically paused. ${JSON.stringify(
+        queryCfg.warnings,
+        null,
+        2,
+      )}`,
     );
   }
-  
+
+  const _pause = useMemo(() => {
+    return pauseForMissingPrimaryKey ? true : pause;
+  }, [pauseForMissingPrimaryKey]);
+
+  console.log('🚀 ~ file: useQueryOne.tsx ~ line 68 ~ const_pause=useMemo ~ _pause', {
+    pause,
+    _pause,
+    isMissingPrimaryKey,
+  });
+
   const [resp, reExecuteQuery] = useQuery<TData>({
     query: queryCfg?.document,
     variables: queryCfg.variables,
-    context: pauseForMissingPrimaryKey ? {...urqlContext, pause: true} : urqlContext,
+    pause: _pause,
+    context: urqlContext,
   });
 
   useEffect(() => {

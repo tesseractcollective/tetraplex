@@ -1,5 +1,7 @@
 {
-  "name": "@tesseractcollective/react-graphql",  
+  "name": "@tesseractcollective/react-graphql",
+  "main": "./dist/src/index.js",
+  "types": "./dist/src/index.d.ts",
   "peerDependencies": {
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
