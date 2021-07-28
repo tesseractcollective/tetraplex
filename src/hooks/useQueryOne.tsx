@@ -68,12 +68,6 @@ export function useQueryOne<TData extends JsonObject, TVariables extends JsonObj
     return pauseForMissingPrimaryKey ? true : pause;
   }, [pauseForMissingPrimaryKey]);
 
-  console.log('🚀 ~ file: useQueryOne.tsx ~ line 68 ~ const_pause=useMemo ~ _pause', {
-    pause,
-    _pause,
-    isMissingPrimaryKey,
-  });
-
   const [resp, reExecuteQuery] = useQuery<TData>({
     query: queryCfg?.document,
     variables: queryCfg.variables,

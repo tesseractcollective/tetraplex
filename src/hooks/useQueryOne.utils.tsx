@@ -60,7 +60,7 @@ export function createQueryOne(state: QueryPreMiddlewareState, config: HasuraDat
   }
   ${frag}`;
 
-    console.log('🚀 ~ file: useQueryOne.utils.tsx ~ line 1 ~ queryString', queryString, variables);
+    // console.log('🚀 ~ file: useQueryOne.utils.tsx ~ line 1 ~ queryString', queryString, variables);
 
     const document = buildDocument(queryString, operationStr, variables, 'createQueryOne', 'query');
 

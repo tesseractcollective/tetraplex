@@ -114,7 +114,7 @@
     "ts-jest": "^26.5.3",
     "type-fest": "^1.0.2",
     "typescript": "^4.2.3",
-    "urql": "^2.0.3",
+    "urql": "^2.0.4",
     "web-vitals": "^1.0.1",
     "wonka": "^4.0.15"
   },
@@ -124,7 +124,7 @@
     "react-native-web": "0.14.13",
     "react-native-web-ui-components": "^6.1.2",
     "react-scripts": "4.0.3",
-    "urql": "^2.0.3",
+    "urql": "^2.0.4",
     "case": "^1.6.3",
     "react-data-table-component": "^6.11.7",
     "react-scroll-trigger": "^0.6.10",

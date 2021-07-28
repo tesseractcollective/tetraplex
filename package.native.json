@@ -9,6 +9,6 @@
     "react": "^17.0.0",
     "react-native": "^0.64.1",
     "react-native-web-ui-components": "^6.1.2",
-    "urql": "^2.0.3"
+    "urql": "^2.0.4"
   }
 }
