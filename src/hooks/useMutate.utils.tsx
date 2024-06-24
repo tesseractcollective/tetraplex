@@ -77,7 +77,7 @@ function updateVariablesFromItemIfRequested(
     const item: any = state.variables.item;
     const valueFromItem = item && item[key];
 
-    if (valueFromItem && includePks) {
+    if (valueFromItem && includePks && !variables[key]) {
       variables[key] = valueFromItem;
     }
   });
